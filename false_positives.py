@@ -94,7 +94,7 @@ def centroid(box):
 
 def fit_video():
     output = 'output.mp4'
-    clip_input = VideoFileClip('project_video.mp4').subclip(9, 12)
+    clip_input = VideoFileClip('project_video.mp4')#.subclip(9, 12)
     clip_output = clip_input.fl_image(draw_boxes)
     clip_output.write_videofile(output, audio=False)
 

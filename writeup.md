@@ -38,11 +38,8 @@ Extracted features were then scaled to zero mean and unit variance and used to t
 #Sliding Window Search
 
 As continuous HOG features extraction can be slow, we extract HOG features for the whole image and then subsample them for the sliding windows. This happens in **find_cars** method in [subsampling_window.py](subsampling_window.py), lines 20-87. In this method we scale the bottom area of the input image and then apply **pix_per_cell** division of 64 pixel window and then slide it by 2 cells per step. The steps for choosing the best **pix_per_cell** are described in the above section. The choice of slide cells number and scales was made by trial and error on the test images. The scales chosen are **range(1, 2.5, 0.25)**.
-
 ![alt text][image5]
-
 ![alt text][image6]
-
 ![alt text][image7]
 
 During fine-tuning the classifier on the test images given, I noticed that if we choose HOG parameters that give us the most fine-grained and clear picture on car examples we start obtaining many false positives, but if we choose HOG parameters that give vague pictures for car/noncar images we of corse start missing real vehicles, so the best parameters lie somewhere in between. Also, spatial binning and color histograms do not raise overall accuracy considerable but it is still better to keep them for the edge cases when we have to rely on color more than on the gradient. When we pick smaller sliding window sizes we also get numerous false positives as smaller images focus on smaller details on the road. 
@@ -56,14 +53,11 @@ The output for the project video can be found here:
 The output video consists of the input video where each frame is overlayed with boxes around the detected vehicles as well as the list of found vehicles'centroids. The pipeline to produce the video is located in method **draw_boxes** of [false_positives.py](false_positives.py), lines 68-90.
 
 As we can see in the previous section examples, the subsampling windows methods used mostly produce a set of overlapping windows over every vehicle that gets successfully detected. We use the fact that one vehicle usually produces multiple boxes and create a heatmap of these windows intersection. Then we threshold the heatmap to output a single and supposedly best box countoring the detected vehicle. see methods **add_heat**, **apply_threshold** and **draw_labeled_bboxes** in [false_positives.py](false_positives.py), lines 26-66.
-
 ![alt text][image8]
-
 ![alt text][image9]
-
 ![alt text][image10]
 
-Also, we expect a vehicle to be present on a video in a similar position and size over several subsequent video frames. To enforce this behaviour a **cars** and **car_box** classes were created in [cars.py](cars.py) file. **car_box** class represents a single vehicle detected in a video; it holds history of this vehicle's box center,wigth and height over the last 12 frames. When we obtain a set of vehicle boxes after thresholded heatmap,we use the following threshold on distance between historical and new box center to identify we have detected the same vehicle: **max(150, 2.0 * (sum(widths) + sum(heights))/float(len(widths) + len(heights)))** where **widths** and **heights** are accumulated over the last 12 frames or over lesser number of frames if the car recently appeared, minimum of 150 pixels was chosen by experiment.
+Also, we expect a vehicle to be present on a video in a similar position and size over several subsequent video frames. To enforce this behaviour a **cars** and **car_box** classes were created in [cars.py](cars.py) file. **car_box** class represents a single vehicle detected in a video; it holds history of this vehicle's box center,wigth and height over the last 12 frames. When we obtain a set of vehicle boxes after thresholded heatmap,we use the following threshold on distance between historical and new box center to identify we have detected the same vehicle: **max(150, 1.3 * (sum(widths) + sum(heights))/float(len(widths) + len(heights)))** where **widths** and **heights** are accumulated over the last 12 frames or over lesser number of frames if the car recently appeared, minimum of 60 pixels and 1.3 weight were chosen by experiment.
 
 #Discussion 
 
