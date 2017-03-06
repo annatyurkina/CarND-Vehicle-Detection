@@ -124,4 +124,4 @@ def show_and_pickle(img):
     plt.show()  
     pickle.dump( box_list, open( "bbox_pickle.p", "wb" ) )
 
-show_and_pickle(img)
+#show_and_pickle(img)

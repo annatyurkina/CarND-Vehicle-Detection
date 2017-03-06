@@ -53,9 +53,9 @@ def draw_labeled_bboxes(img, labels):
         print('RRREAL{}'.format(bbox))
         bboxes.append(bbox)
 
-    #sensible_boxes = cars_in_video.get_sensible_boxes(bboxes)
+    sensible_boxes = cars_in_video.get_sensible_boxes(bboxes)
 
-    #for bbox in sensible_boxes:
+    for bbox in sensible_boxes:
         # Draw the box on the image
         cv2.rectangle(img, bbox[0], bbox[1], (0,0,255), 6)
         center = centroid(bbox)
@@ -94,7 +94,7 @@ def centroid(box):
 
 def fit_video():
     output = 'output.mp4'
-    clip_input = VideoFileClip('project_video.mp4')#.subclip(9, 12)
+    clip_input = VideoFileClip('project_video.mp4')#.subclip(5, 8)
     clip_output = clip_input.fl_image(draw_boxes)
     clip_output.write_videofile(output, audio=False)
 
