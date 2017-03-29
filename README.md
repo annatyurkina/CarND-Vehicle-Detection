@@ -13,9 +13,9 @@
 [image10]: ./output_images/heatmap_boxes4.png "False Positives Elimination, test4"
 [video1]: ./output.mp4 "Video"
 
-## Vehicle Detection
+# Vehicle Detection
 
-# Histogram of Oriented Gradients (HOG)
+## Histogram of Oriented Gradients (HOG)
 
 HOG features, together with color histogram and spatial binning, are used to train a classifier to recognise images of other cars on the road.  The code for HOG features extraction is located in **get_hog_features** method of [hog_features.py](hog_features.py), lines 54-68. Spatial binning is in **bin_spatial** method of [hog_features.py](hog_features.py), lines 37-42 and color histogram features extraction is in **convert_color** method in lines 44-52. The features are afterwards combined in **extract_features** method, lines 72-188. 
 
@@ -35,7 +35,7 @@ To choose final parameters for feature extraction, I used comparison images abov
 
 Extracted features were then scaled to zero mean and unit variance and used to train LinearSVC classifier, the code of splitting training data, scaling, fitting and testing the classifier can be found in **train** method of [hog_features.py](hog_features.py), lines 201-224. The classifier itself, the scaler and feature extraction parameters used are then saved to a pickle file (lines 226-227) to be restored and used in [subsampling_window.py](subsampling_window.py). 
 
-# Sliding Window Search
+## Sliding Window Search
 
 As continuous HOG features extraction can be slow, we extract HOG features for the whole image and then subsample them for the sliding windows. This happens in **find_cars** method in [subsampling_window.py](subsampling_window.py), lines 20-87. In this method we scale the bottom area of the input image and then apply **pix_per_cell** division of 64 pixel window and then slide it by 2 cells per step. The steps for choosing the best **pix_per_cell** are described in the above section. The choice of slide cells number and scales was made by trial and error on the test images. The scales chosen are **range(1, 2.5, 0.25)**.
 ![alt text][image5]
@@ -44,7 +44,7 @@ As continuous HOG features extraction can be slow, we extract HOG features for t
 
 During fine-tuning the classifier on the test images given, I noticed that if we choose HOG parameters that give us the most fine-grained and clear picture on car examples we start obtaining many false positives, but if we choose HOG parameters that give vague pictures for car/noncar images we of corse start missing real vehicles, so the best parameters lie somewhere in between. Also, spatial binning and color histograms do not raise overall accuracy considerable but it is still better to keep them for the edge cases when we have to rely on color more than on the gradient. When we pick smaller sliding window sizes we also get numerous false positives as smaller images focus on smaller details on the road. 
 
-# Video Implementation
+## Video Implementation
 
 The output for the project video can be found here:
 
@@ -59,7 +59,7 @@ As we can see in the previous section examples, the subsampling windows methods 
 
 Also, we expect a vehicle to be present on a video in a similar position and size over several subsequent video frames. To enforce this behaviour a **cars** and **car_box** classes were created in [cars.py](cars.py) file. **car_box** class represents a single vehicle detected in a video; it holds history of this vehicle's box center,wigth and height over the last 12 frames. When we obtain a set of vehicle boxes after thresholded heatmap,we use the following threshold on distance between historical and new box center to identify we have detected the same vehicle: **max(150, 1.3 * (sum(widths) + sum(heights))/float(len(widths) + len(heights)))** where **widths** and **heights** are accumulated over the last 12 frames or over lesser number of frames if the car recently appeared, minimum of 60 pixels and 1.3 weight were chosen by experiment.
 
-# Discussion 
+## Discussion 
 
 The pipeline works relatively well on the project video but is prone to misdetect on videos taken in different sceneries/environments. That's mostly due to rather small training set that does not contain time series images but rather all images from extra dataset. Also, the solution given relies on car speed being more or less uniform and the path being flat (i.e. the road is always in the same part of the frame). Pipeline does not detect small vehicles in the distance and struggles to differentiate between two cars being too close to each other.
 
