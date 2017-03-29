@@ -13,9 +13,9 @@
 [image10]: ./output_images/heatmap_boxes4.png "False Positives Elimination, test4"
 [video1]: ./output.mp4 "Video"
 
-##Vehicle Detection
+## Vehicle Detection
 
-#Histogram of Oriented Gradients (HOG)
+# Histogram of Oriented Gradients (HOG)
 
 HOG features, together with color histogram and spatial binning, are used to train a classifier to recognise images of other cars on the road.  The code for HOG features extraction is located in **get_hog_features** method of [hog_features.py](hog_features.py), lines 54-68. Spatial binning is in **bin_spatial** method of [hog_features.py](hog_features.py), lines 37-42 and color histogram features extraction is in **convert_color** method in lines 44-52. The features are afterwards combined in **extract_features** method, lines 72-188. 
 
